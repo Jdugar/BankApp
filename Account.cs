@@ -5,6 +5,16 @@ using System.Text;
 
 namespace BankApp
 {
+    #region
+    ///<summary>
+    ///This is enum for account type
+    ///</summary>
+    enum Typeofaccount 
+    {
+        Checking
+            Saving
+            Loan
+                }
     #region 
 
     /// <summary>
@@ -15,8 +25,8 @@ namespace BankApp
         public decimal amount = 0;
         public static int lastAccountNo = 0;
         public int AccountNo { get; set; }
-        public string emailAddress { get; set; }
-        public String Accounttype { get; set; }
+        public string EmailAddress { get; set; }
+        public Typeofaccount Accounttype { get; set; }
         public decimal balance { get; private set; }
         public DateTime createddate { get; private set; }
         public Account()
@@ -33,6 +43,11 @@ namespace BankApp
             balance += amount;
 
         }
+        public void Withdraw()
+        {
+
+        }
+
         public void Print()
         {
             Console.WriteLine($"" +
