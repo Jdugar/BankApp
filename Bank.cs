@@ -4,19 +4,21 @@ using System.Text;
 
 namespace BankApp
 {
-   static class Bank
-    {
-        public static Account createAccount(String emailaddress, Typeofaccount accounttype ,Decimal intialdeposit)
+    static class Bank                         
+    {                                                 
+        public static Account CreateAccount(String em, Typeofaccount aType, Decimal amountToBeDeposited)
         {
-            var account = new Account
+            var acct = new Account
             {
-                EmailAddress = emailaddress,
-                Accounttype = accounttype,
+                EmailAddress = em,
+                Accounttype = aType,
             };
-            if(intialdeposit>0)
+            if (amountToBeDeposited > 0)
             {
-                account.Deposit(intialdeposit);
-            }return account;
+                acct.Deposit(amountToBeDeposited);
+            }
+
+            return acct;
         }
     }
 }

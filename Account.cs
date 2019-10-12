@@ -9,12 +9,12 @@ namespace BankApp
     ///<summary>
     ///This is enum for account type
     ///</summary>
-    enum Typeofaccount 
+    enum Typeofaccount
     {
-        Checking
-            Saving
-            Loan
-                }
+        Checking,
+        Saving,
+        Loan
+    }
     #region 
 
     /// <summary>
@@ -43,9 +43,16 @@ namespace BankApp
             balance += amount;
 
         }
-        public void Withdraw()
+        public void Deposit(decimal amt)
         {
+            amount = Convert.ToInt32(amt);
+            
+            += amount;
 
+        }
+        public void Withdraw(decimal amount)
+        {
+            Balance
         }
 
         public void Print()
