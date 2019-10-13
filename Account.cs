@@ -14,8 +14,8 @@ namespace BankApp
         Checking,
         Saving,
         Loan
+
     }
-    #region 
 
     /// <summary>
     /// This is a bank account
@@ -34,39 +34,22 @@ namespace BankApp
             AccountNo = ++lastAccountNo;
             createddate = DateTime.Now;
         }
-        public void Deposit()
-        {
-
-            Console.WriteLine("enter the deposit amount");
-            var input = Console.ReadLine();
-            amount = Convert.ToInt32(input);
-            balance += amount;
-
-        }
+   
         public void Deposit(decimal amt)
         {
-            amount = Convert.ToInt32(amt);
+           amount = Convert.ToDecimal(amt);
+            balance+=amount;
             
-            += amount;
-
         }
         public void Withdraw(decimal amount)
         {
-            Balance
+            
         }
 
-        public void Print()
-        {
-            Console.WriteLine($"" +
-               $"AccountNo: {AccountNo},\n" +
-               $"AccountType: {Accounttype},\n" +
-               $"EmailAddress: {emailAddress},\n" +
-               $"Balance: {balance},\n" +
-               $"CreatedDate: {createddate}");
-
+       
         }
     }
     #endregion
 
 
-}
+
