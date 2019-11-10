@@ -9,13 +9,13 @@ namespace BankApp
 {
     static class Bank
     {
-        private static List<Account> accounts = new List<Account>();
-        private static List<Transaction> transactions = new List<Transaction>();
+        private static BankContext db = new BankContext();
 
-        public static Account CreateAccount(String em, Typeofaccount aType, Decimal amountToBeDeposited)
+        public static Account CreateAccount(String em,string accountname, Typeofaccount aType =Typeofaccount.Checking, Decimal amountToBeDeposited=0)
         {
             var acct = new Account
             {
+                AccountName=accountname,
                 EmailAddress = em,
                 Accounttype = aType,
             };
@@ -23,16 +23,21 @@ namespace BankApp
             {
                 acct.Deposit(amountToBeDeposited);
             }
-            accounts.Add(acct);
+            db.Accounts.Add(acct);
+            db.SaveChanges();
             return acct;
         }
         public static IEnumerable<Account> GetAllAccountsbyEmailAddress(string Emailaddress)
         {
-            return accounts.Where(a => a.EmailAddress == Emailaddress);
+            return db.Accounts.Where(a => a.EmailAddress == Emailaddress);
         }
-        public static void Deposit(int accountnumber, decimal amount)
+        public static IEnumerable<Transaction> GetAllTransactionsbyAccountNunber(int accountnumber)
         {
-            var account = accounts.SingleOrDefault(a => a.AccountNo == accountnumber);
+            return db.Transactions.Where(a => a.AccountNumber == accountnumber);
+        }
+            public static void Deposit(int accountnumber, decimal amount)
+        {
+            var account = db.Accounts.SingleOrDefault(a => a.AccountNo == accountnumber);
             if (account == null)
             {
                 return;
@@ -49,11 +54,12 @@ namespace BankApp
                 AccountNumber = accountnumber
 
             };
-            transactions.Add(transaction);
+            db.Transactions.Add(transaction);
+            db.SaveChanges();
         }
         public static void Withdraw(int accountnumber, decimal amount)
         {
-            var account = accounts.SingleOrDefault(a => a.AccountNo == accountnumber);
+            var account = db.Accounts.SingleOrDefault(a => a.AccountNo == accountnumber);
             if (account == null)
             {
                 return;
@@ -69,7 +75,8 @@ namespace BankApp
                 AccountNumber = accountnumber
 
             };
-            transactions.Add(transaction1);
+            db.Transactions.Add(transaction1);
+            db.SaveChanges();
         }
 
     }

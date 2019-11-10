@@ -23,15 +23,16 @@ namespace BankApp
     class Account
     {
         public decimal amount = 0;
-        public static int lastAccountNo = 0;
+        
         public int AccountNo { get; set; }
+        public string  AccountName { get; set; }
         public string EmailAddress { get; set; }
         public Typeofaccount Accounttype { get; set; }
-        public decimal balance { get; private set; }
-        public DateTime createddate { get; private set; }
+        public decimal balance { get;  set; }
+        public DateTime createddate { get;  set; }
         public Account()
         {
-            AccountNo = ++lastAccountNo;
+            
             createddate = DateTime.Now;
         }
    
@@ -43,7 +44,7 @@ namespace BankApp
         }
         public void Withdraw(decimal amount)
         {
-            
+            balance -= amount;
         }
 
        
