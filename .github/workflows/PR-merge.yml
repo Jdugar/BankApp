@@ -9,26 +9,37 @@ jobs:
     runs-on: windows-latest  # Use the latest Windows runner
  
     steps:
+      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v2  # Check out the code in the PR
  
+      # Step 2: Set up Python (or other environment)
       - name: Set up Python (or other environment)
         uses: actions/setup-python@v2
         with:
           python-version: '3.9'  # Adjust this based on your project needs
  
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: |
           # Example: If you're using Python, install dependencies
           python -m pip install -r requirements.txt
  
-      - name: Generate artifact (replace with your own logic)
+      # Step 4: Generate artifact (replace with your own logic)
+      - name: Generate artifact
         run: |
           # Example: Here you might run a script that generates an artifact
           New-Item -Path "artifact" -ItemType "Directory" -Force
           "This is a test artifact" | Out-File -FilePath "artifact/test_file.txt"
+      
+      # Debug Step: List the files in the artifact folder to verify the content
+      - name: List artifact directory contents
+        run: |
+          dir artifact
+
+      # Step 5: Upload Artifact
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3  # Upload the artifact
+        uses: actions/upload-artifact@v2  # Use version v2 for stability
         with:
           name: pr-artifact  # Artifact name
           path: artifact/*  # Path to the artifact to be uploaded
