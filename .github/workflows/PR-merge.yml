@@ -1,39 +1,34 @@
 name: PR Artifact Upload
-
+ 
 on:
   pull_request:
-    branches:
-      - main   # or specify the branches you want to trigger the action on, e.g., 'develop'
-
+    types: [opened, synchronize, reopened]  # Trigger on PR open, synchronize, and reopen events
+ 
 jobs:
-  upload-artifact:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: windows-latest  # Use the latest Windows runner
+ 
     steps:
-      # Step 1: Checkout the PR branch
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      # Step 2: Build/Generate the artifact (e.g., create a zip file)
-      - name: Build the artifact
-        run: |
-          mkdir -p dist
-          echo "This is a test file for PR: ${{ github.event.pull_request.title }}" > dist/app.zip  # You can replace this with your actual build commands
-
-      # Step 3: Create a GitHub release (Draft release for PR)
-      - name: Create a draft release
-        id: create_release
-        run: |
-          release=$(curl -s --header "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            --data '{"tag_name": "pr-${{ github.event.number }}", "name": "PR #${{ github.event.number }} - ${{ github.event.pull_request.title }}", "draft": true}' \
-            https://api.github.com/repos/${{ github.repository }}/releases)
-          echo "::set-output name=release_id::$(echo $release | jq .id)"
-
-      # Step 4: Upload the artifact to the release
-      - name: Upload artifact to release
-        uses: Shopify/upload-to-release@v2.0.0
+      - name: Checkout repository
+        uses: actions/checkout@v2  # Check out the code in the PR
+ 
+      - name: Set up Python (or other environment)
+        uses: actions/setup-python@v2
         with:
-          name: pr-artifact-${{ github.event.number }}  # Artifact name, could include PR number
-          path: ./dist/app.zip  # Path to the file you want to upload
-          content-type: application/zip  # Content type (optional)
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          release-id: ${{ steps.create_release.outputs.release_id }}  # Use the release ID from the previous step
+          python-version: '3.9'  # Adjust this based on your project needs
+ 
+      - name: Install dependencies
+        run: |
+          # Example: If you're using Python, install dependencies
+          python -m pip install -r requirements.txt
+ 
+      - name: Generate artifact (replace with your own logic)
+        run: |
+          # Example: Here you might run a script that generates an artifact
+          New-Item -Path "artifact" -ItemType "Directory" -Force
+          "This is a test artifact" | Out-File -FilePath "artifact/test_file.txt"
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3  # Upload the artifact
+        with:
+          name: pr-artifact  # Artifact name
+          path: artifact/*  # Path to the artifact to be uploaded
