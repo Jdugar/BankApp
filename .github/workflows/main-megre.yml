@@ -1,0 +1,51 @@
+name: Upload E2E Tests Artifact
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow when changes are pushed to the 'main' branch (i.e., PR merged)
+
+jobs:
+  upload-artifact:
+    runs-on: windows-latest  # Use Windows runner to run PowerShell scripts
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2  # Checkout the code from the PR merge
+
+      # Step 2: Get the current version number or commit SHA
+      - name: Get version number
+        id: version
+        run: |
+          # You can use GitHub variables like GITHUB_SHA or GITHUB_REF to define the version number
+          # For example, using the last 7 characters of the commit SHA:
+          VERSION=$(echo ${GITHUB_SHA} | head -c 7)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          
+          echo "Version: $VERSION"
+
+      # Step 3: Prepare the artifact (make sure the tests are in the E2E folder)
+      - name: Collect PowerShell tests
+        run: |
+          # Example of creating an artifact
+          New-Item -Path "artifact" -ItemType "Directory" -Force
+          # Assuming your E2E tests are in the 'E2E' folder, we'll copy all test files into the artifact folder
+          Copy-Item -Path 'E2E\*' -Destination 'artifact\' -Recurse
+
+      # Step 4: List the artifact directory contents for debugging
+      - name: List artifact directory contents
+        run: |
+          dir artifact
+
+      # Step 5: Upload the artifact with the version number
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4.6.2  # Upload artifact action
+        with:
+          name: e2e-tests-${{ env.VERSION }}  # Artifact name with version number
+          path: artifact/*  # Path to the collected files
+          if-no-files-found: warn  # Don't fail if no files are found
+          retention-days: 7  # Artifact retention period (optional)
+          compression-level: 6  # Optional compression level
+          overwrite: true  # Overwrite artifact if one with the same name exists
+          include-hidden-files: false  # Do not include hidden files
