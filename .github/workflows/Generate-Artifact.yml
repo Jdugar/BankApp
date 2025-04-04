@@ -1,7 +1,7 @@
-name: Add Version deatils and Upload E2E Tests Artifact
+name: Add Version Details and Upload E2E Tests Artifact
 
 on: [push]
-  
+
 jobs:
   build-and-upload:
     runs-on: windows-latest  # Use Windows runner to run PowerShell scripts
@@ -11,33 +11,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2  # Checkout the code from the PR merge
 
-      # Step 2: Set up the environment (if necessary for your project)
-      # For example, if you're using .NET, Node.js, etc., add those steps here
-      # Example: Set up .NET (Uncomment if needed for your project)
-      #  - name: Set up .NET
-      #   uses: actions/setup-dotnet@v1
-      #   with:
-      #     dotnet-version: '6.0'  # Specify the version you're using
-
-      # Step 3: Build Project (Customize based on your project)
+      # Step 2: Build Project (Customize based on your project)
       - name: Build the Project
         run: |
-          # Assuming a .NET project, this is an example build step
-          # Replace this with your actual build commands
-          # Example: For a .NET project
-          # dotnet build --configuration Release
-          # Or for a Node.js project:
-          # npm install && npm run build
-          
-          # For simplicity, let's assume you just want to prepare the E2E folder
           echo "Building or preparing the E2E tests..."
-          # Custom build commands go here if needed
-          # Example: Compile or prepare PowerShell tests (if needed)
-          # For this example, let's simulate a build by creating a build folder:
           mkdir -p build
           echo "Simulated build process..." > build/build_output.txt
 
-      # Step 4: Get the current version number from GITHUB_SHA (first 7 characters)
+      # Step 3: Get the current version number from GITHUB_SHA (first 7 characters)
       - name: Get version number
         run: |
           # PowerShell code to extract the first 7 characters of GITHUB_SHA
@@ -45,7 +26,12 @@ jobs:
           Write-Host "Version: $version"  # Output version for debugging
           echo "VERSION=$version" >> $GITHUB_ENV  # Set the version to be used in other steps
 
-      # Step 5: Prepare the artifact (collect PowerShell tests)
+      # Debugging Step to ensure the version is set correctly
+      - name: Debug version
+        run: |
+          echo "The version is ${{ env.VERSION }}"
+
+      # Step 4: Prepare the artifact (collect PowerShell tests and build output)
       - name: Collect PowerShell tests and build output
         run: |
           # Create an artifact directory
@@ -55,12 +41,12 @@ jobs:
           # Optionally, copy build output if you have it
           Copy-Item -Path 'build\*' -Destination 'artifact\' -Recurse
 
-      # Step 6: List the artifact directory contents for debugging
+      # Step 5: List the artifact directory contents for debugging
       - name: List artifact directory contents
         run: |
           dir artifact
 
-      # Step 7: Upload the artifact with the version number
+      # Step 6: Upload the artifact with the version number
       - name: Upload Artifact
         uses: actions/upload-artifact@v4.6.2  # Upload artifact action
         with:
