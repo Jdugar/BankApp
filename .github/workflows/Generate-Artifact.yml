@@ -24,12 +24,12 @@ jobs:
           # PowerShell code to extract the first 7 characters of GITHUB_SHA
           $version = $env:GITHUB_SHA.Substring(0, 7)  # Get first 7 characters of SHA
           Write-Host "Version: $version"  # Output version for debugging
-          echo "VERSION=$version" >> $GITHUB_ENV  # Set the version to be used in other steps
+          echo "VERSION=$version" >> $env:GITHUB_ENV  # Ensure we use the correct environment file syntax
 
       # Debugging Step to ensure the version is set correctly
       - name: Debug version
         run: |
-          echo "The version is ${{ env.VERSION }}"
+          echo "The version is ${{ env.VERSION }}"  # Correctly reference the version here
 
       # Step 4: Prepare the artifact (collect PowerShell tests and build output)
       - name: Collect PowerShell tests and build output
