@@ -1,4 +1,4 @@
-name: Build and Upload E2E Tests Artifact
+name: Add Version deatils and Upload E2E Tests Artifact
 
 on: [push]
   
