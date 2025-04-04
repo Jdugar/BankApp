@@ -17,7 +17,7 @@ jobs:
         run: |
           Write-Host "Checking out the repository..."
         
-      # Step 2: Get the current version from version.txt
+      # Step 2: Get current version from version.txt
       - name: Get current version from version.txt
         id: get_version
         run: |
@@ -39,7 +39,7 @@ jobs:
           # Set the version as an environment variable
           echo "VERSION=$version" >> $env:GITHUB_ENV  # Set the version to be used in other steps
 
-      # Step 3: Increment version (major, minor, patch logic)
+      # Step 3: Increment version
       - name: Increment version
         id: increment_version
         run: |
@@ -125,7 +125,3 @@ jobs:
           compression-level: 6  # Optional compression level
           overwrite: true  # Overwrite artifact if one with the same name exists
           include-hidden-files: false  # Do not include hidden files
-        run: |
-          Write-Host "Step 7: Uploading artifact..."
-          Write-Host "Uploading artifact with name: e2e-tests-${{ env.NEW_VERSION }}."
-          Write-Host "Files to be uploaded: artifact/*"
