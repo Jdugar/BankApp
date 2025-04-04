@@ -1,44 +1,64 @@
-name: Upload E2E Tests Artifact
+name: Build and Upload E2E Tests Artifact
 
-on:
-  push:
-    branches:
-      - master   # Trigger the workflow when changes are pushed to the 'main' branch (i.e., PR merged)
+on: [push]
 
 jobs:
-  upload-artifact:
+  build-and-upload:
     runs-on: windows-latest  # Use Windows runner to run PowerShell scripts
 
     steps:
-      # Step 1: Checkout the repository
+      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v2  # Checkout the code from the PR merge
 
-      # Step 2: Get the current version number or commit SHA
-      - name: Get version number
-        id: version
-        run: |
-          # You can use GitHub variables like GITHUB_SHA or GITHUB_REF to define the version number
-          # For example, using the last 7 characters of the commit SHA:
-          VERSION=$(echo ${GITHUB_SHA} | head -c 7)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          
-          echo "Version: $VERSION"
+      # Step 2: Set up the environment (if necessary for your project)
+      # For example, if you're using .NET, Node.js, etc., add those steps here
+      # Example: Set up .NET (Uncomment if needed for your project)
+      # - name: Set up .NET
+      #   uses: actions/setup-dotnet@v1
+      #   with:
+      #     dotnet-version: '6.0'  # Specify the version you're using
 
-      # Step 3: Prepare the artifact (make sure the tests are in the E2E folder)
+      # Step 3: Build Project (Customize based on your project)
+      - name: Build the Project
+        run: |
+          # Assuming a .NET project, this is an example build step
+          # Replace this with your actual build commands
+          # Example: For a .NET project
+          # dotnet build --configuration Release
+          # Or for a Node.js project:
+          # npm install && npm run build
+          
+          # For simplicity, let's assume you just want to prepare the E2E folder
+          echo "Building or preparing the E2E tests..."
+          # Custom build commands go here if needed
+          # Example: Compile or prepare PowerShell tests (if needed)
+          # For this example, let's simulate a build by creating a build folder:
+          mkdir -p build
+          echo "Simulated build process..." > build/build_output.txt
+
+      # Step 4: Get the current version number in PowerShell format
+      - name: Get version number
+        run: |
+          # PowerShell code to extract the first 7 characters of GITHUB_SHA
+          $version = $env:GITHUB_SHA.Substring(0, 7)
+          echo "Version: $version"
+          echo "VERSION=$version" >> $GITHUB_ENV  # Set the version to be used in other steps
+
+      # Step 5: Prepare the artifact (collect PowerShell tests)
       - name: Collect PowerShell tests
         run: |
-          # Example of creating an artifact
+          # Create an artifact directory
           New-Item -Path "artifact" -ItemType "Directory" -Force
-          # Assuming your E2E tests are in the 'E2E' folder, we'll copy all test files into the artifact folder
+          # Copy PowerShell test files from E2E folder to artifact folder
           Copy-Item -Path 'E2E\*' -Destination 'artifact\' -Recurse
 
-      # Step 4: List the artifact directory contents for debugging
+      # Step 6: List the artifact directory contents for debugging
       - name: List artifact directory contents
         run: |
           dir artifact
 
-      # Step 5: Upload the artifact with the version number
+      # Step 7: Upload the artifact with the version number
       - name: Upload Artifact
         uses: actions/upload-artifact@v4.6.2  # Upload artifact action
         with:
